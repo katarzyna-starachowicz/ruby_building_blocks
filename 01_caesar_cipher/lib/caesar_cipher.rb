@@ -1,45 +1,22 @@
 def caesar_cipher(string, shift)
-  letters = string.split(//)
-
-  a_z = Hash.new
-  number = 1
-  Range.new("a", "z").to_a.each do |letter| #create a hash, "a"=>1, "b"=>2 etc (a hole alphabete)
-    a_z[letter] = number
-    number += 1
-  end
+    letters = string.split("")
+    a_z = ('a'..'z').to_a
+    a_z_caps = ('A'..'Z').to_a
   
-  a_z_caps = Hash.new
-  number = 1
-  Range.new("A", "Z").to_a.each do |letter| #create a hash, "A"=>1, "B"=>2 etc (a hole alphabete)
-    a_z_caps[letter] = number
-    number += 1
-  end
-
-  encrypted_string = ""
-  letters.each do |letter|
-    if a_z.keys.include? letter
-      if a_z[letter] + shift <= a_z.length and a_z[letter] + shift > 0
-        encrypted_string += a_z.key(a_z[letter] + shift)
-      elsif a_z[letter] + shift < 0
-        encrypted_string += a_z.key(a_z.length - ((a_z[letter] + shift).abs % a_z.length))
-      else
-        encrypted_string += a_z.key((a_z[letter] + shift) % a_z.length)
-      end
-    elsif a_z_caps.keys.include? letter 
-      if a_z_caps[letter] + shift <= a_z_caps.length and a_z_caps[letter] + shift > 0
-        encrypted_string += a_z_caps.key(a_z_caps[letter] + shift)
-      elsif a_z_caps[letter] + shift < 0
-        encrypted_string += a_z_caps.key(a_z_caps.length - ((a_z_caps[letter] + shift).abs % a_z_caps.length))
-      else
-        if (a_z_caps[letter] + shift) % a_z_caps.length != 0
-          encrypted_string += a_z_caps.key((a_z_caps[letter] + shift) % a_z_caps.length)
-        else
-          encrypted_string += a_z_caps.key(a_z_caps[letter] + shift % a_z_caps.length)
-        end
-      end
+  shift %= 26 if shift > 26 || shift < 0
+    
+    letters.map! do |letter| 
+    if a_z.include?(letter)
+      new_index = a_z.index(letter) + shift
+      new_index = (26 - new_index).abs if new_index > 25  
+      letter = a_z[new_index]
+    elsif a_z_caps.include?(letter)
+      new_index = a_z_caps.index(letter) + shift
+      new_index = (26 - new_index).abs if new_index > 25
+      letter = a_z_caps[new_index]
     else
-      encrypted_string += letter
+      letter
     end
   end
-  encrypted_string
+    letters.join("")
 end
